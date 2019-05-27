@@ -1,3 +1,5 @@
+option(QWT_USE_STATIC_LIBS "Whether to compile qwt as a static library" ON)
+
 #----------------------------------------------------------------
 # Packages
 #----------------------------------------------------------------
@@ -219,14 +221,18 @@ set(qwt_sources
 #----------------------------------------------------------------
 # Target
 #----------------------------------------------------------------
-add_library(qwt SHARED ${qwt_headers} ${qwt_sources})
+if(QWT_USE_STATIC_LIBS)
+    add_library(qwt STATIC ${qwt_headers} ${qwt_sources})
+else()
+    add_library(qwt SHARED ${qwt_headers} ${qwt_sources})
 
-target_compile_definitions(qwt
-	PUBLIC
-		$<$<BOOL:MSVC>:QWT_DLL>
-	PRIVATE
-		$<$<BOOL:MSVC>:QWT_MAKEDLL>
-)
+    target_compile_definitions(qwt
+        PUBLIC
+            $<$<BOOL:MSVC>:QWT_DLL>
+        PRIVATE
+            $<$<BOOL:MSVC>:QWT_MAKEDLL>
+    )
+endif()
 
 target_include_directories(qwt
 	PUBLIC
